@@ -5,7 +5,7 @@ Automatic segmentation of glomerular substructures in kidney biopsy electron mic
 
 <!-- code_chunk_output -->
 
-* [PyTorch Template Project](#pytorch-template-project)
+* [KU Leuven Thesis](#ku-leuven-thesis)
 	* [Requirements](#requirements)
 	* [Features](#features)
 	* [Folder Structure](#folder-structure)
