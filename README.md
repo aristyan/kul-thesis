@@ -1,5 +1,5 @@
-# PyTorch Template Project
-PyTorch deep learning project made easy.
+# KU Leuven Thesis
+Automatic segmentation of glomerular substructures in kidney biopsy electron microscopy images using deep learning techniques.
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
