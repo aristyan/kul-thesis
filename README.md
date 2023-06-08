@@ -37,6 +37,11 @@ Automatic segmentation of glomerular substructures in kidney biopsy electron mic
 * PyTorch >= 0.4 (1.2 recommended)
 * tqdm (Optional for `test.py`)
 * tensorboard >= 1.14 (see [Tensorboard Visualization](#tensorboard-visualization))
+* Albumentations
+* Matplotlib
+* Numpy
+* OpenCV
+* Patchify
 
 ## Features
 * Clear folder structure which is suitable for many deep learning projects.
