@@ -5,7 +5,7 @@ from torch.utils.data import Dataset
 from utils import rgb2mask
 
 
-class CustomDataset(Dataset):
+class KidneyBiopsyDataset(Dataset):
     def __init__(self, images_path, masks_path, patch_size, split, transform=None):
         self.images_path = images_path
         self.masks_path = masks_path

@@ -14,7 +14,7 @@ from model2 import unet
 import random
 
 from loss import DiceLoss, DiceBCELoss, CELoss
-from data import CustomDataset
+from data import KidneyBiopsyDataset
 
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
@@ -227,9 +227,9 @@ if __name__ == "__main__":
         # additional_targets={'mask0': 'mask'}
     )
 
-    train_dataset = CustomDataset(train_images, train_masks, patch_size=256, split='train', transform=train_transform)
-    valid_dataset = CustomDataset(valid_images, valid_masks, patch_size=256, split='valid', transform=valid_transform)
-    test_dataset = CustomDataset(test_images, test_masks, patch_size=256, split='test', transform=test_transform)
+    train_dataset = KidneyBiopsyDataset(train_images, train_masks, patch_size=256, split='train', transform=train_transform)
+    valid_dataset = KidneyBiopsyDataset(valid_images, valid_masks, patch_size=256, split='valid', transform=valid_transform)
+    test_dataset = KidneyBiopsyDataset(test_images, test_masks, patch_size=256, split='test', transform=test_transform)
 
 
     #print(train_dataset[0][0][0])
