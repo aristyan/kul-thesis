@@ -26,7 +26,7 @@ from pytorchtools import EarlyStopping
 from focal_loss.focal_loss import FocalLoss
 
 """ Training function to calculate the training epoch loss """
-def train(model, loader, optimizer, loss_fn, device):
+def train_one_epoch(model, loader, optimizer, loss_fn, device):
     epoch_loss = 0.0
 
     model.train()
@@ -53,7 +53,7 @@ def train(model, loader, optimizer, loss_fn, device):
 
 
 """ Validation function to calculate the validation epoch loss """
-def evaluate(model, loader, loss_fn, device):
+def evaluate_one_epoch(model, loader, loss_fn, device):
     epoch_loss = 0.0
 
     model.eval()
@@ -344,8 +344,8 @@ if __name__ == "__main__":
     for epoch in range(num_epochs):
         start_time = time.time()
 
-        train_loss = train(model, train_loader, optimizer, loss_fn, device)
-        valid_loss = evaluate(model, valid_loader, loss_fn, device)
+        train_loss = train_one_epoch(model, train_loader, optimizer, loss_fn, device)
+        valid_loss = evaluate_one_epoch(model, valid_loader, loss_fn, device)
 
         # Tell wandb to logg epochs, train loss and valid loss
         wandb.log({"epoch": epoch, "train_loss": train_loss, "valid_loss": valid_loss})
