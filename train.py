@@ -29,37 +29,25 @@ from focal_loss.focal_loss import FocalLoss
 def train(model, loader, optimizer, loss_fn, device):
     epoch_loss = 0.0
 
-    # indicating that the model is training
-    # (important for dropout and batch_norm layers)
     model.train()
 
-    # going through all the batches in the loader
     for x, y in loader:
-        # loading the images and the corresponding masks to the GPU device
         x = x.to(device, dtype=torch.float32)
         y = y.to(device, dtype=torch.float32)
 
-        # setting the gradients to zero
         optimizer.zero_grad()
-
-        # making a prediction
+        
         y_pred = model(x)
-
-        # finding the loss between the prediction and the ground truth
+        
         loss = loss_fn(y_pred, y)
-
-        # performing back propagation
+        
         loss.backward()
-
-        # optimizing the loss function using the optimizer
         optimizer.step()
 
         torch.cuda.empty_cache()
 
-        # adding each batch loss to calculate later the average of all batches
         epoch_loss += loss.item()
 
-    # calculating the mean loss
     epoch_loss = epoch_loss / len(loader)
     return epoch_loss
 
@@ -68,28 +56,20 @@ def train(model, loader, optimizer, loss_fn, device):
 def evaluate(model, loader, loss_fn, device):
     epoch_loss = 0.0
 
-    # turn off dropout, batch norm, etc. layers
-    # during model evaluation
     model.eval()
 
-    # turning off gradients computation
     with torch.no_grad():
-        # going through all the batches in the loader
         for x, y in loader:
-            # loading the images and the corresponding masks to the GPU device
+            
             x = x.to(device, dtype=torch.float32)
             y = y.to(device, dtype=torch.float32)
 
-            # making a prediction
             y_pred = model(x)
 
-            # finding the loss between the prediction and the ground truth
             loss = loss_fn(y_pred, y)
 
-            # adding each batch loss to calculate later the average of all batches
             epoch_loss += loss.item()
 
-        # calculating the mean loss
         epoch_loss = epoch_loss / len(loader)
     return epoch_loss
 
