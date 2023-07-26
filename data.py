@@ -37,11 +37,11 @@ class KidneyBiopsyDataset(Dataset):
         # Read rgb mask as rgb image
         mask = cv2.imread(self.masks_path[image_number], cv2.IMREAD_COLOR)
 
-        # Crop image
+        # Crop image and mask
         image = image[:, 128:3712]
         mask = mask[:, 128:3712]
         
-        # Downscale image
+        # Downscale image and mask
         down_points = (int(image.shape[1] / 2), int(image.shape[0] / 2))
         image = cv2.resize(image, down_points, interpolation=cv2.INTER_NEAREST)
         mask = cv2.resize(mask, down_points, interpolation=cv2.INTER_NEAREST)
