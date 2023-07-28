@@ -6,15 +6,20 @@ from utils import rgb2mask
 
 
 class KidneyBiopsyDataset(Dataset):
-    def __init__(self, images_path, masks_path, patch_size, split, transform=None):
+    def __init__(self, images_path, masks_path, patch_size, split, transform=None, n_augs=0, downscale=True):
         self.images_path = images_path
         self.masks_path = masks_path
         self.patch_size = patch_size
         self.split = split
         self.transform = transform
         self.n_samples = len(images_path)
-        self.n_patches = 42
-        self.n_augs = 4
+        self.downscale = downscale
+        self.n_patches = self.__get_n_patches__()
+
+        if n_augs <= 0:
+            self.n_augs = 1
+        else:
+            self.n_augs = n_augs
 
     def __len__(self):
         if self.split == 'train':
@@ -44,9 +49,10 @@ class KidneyBiopsyDataset(Dataset):
         mask = mask[:, 128:3712]
         
         # Downscale image and mask (3072 x 3584) -> (1536 x 1792)
-        down_points = (int(image.shape[1] / 2), int(image.shape[0] / 2))
-        image = cv2.resize(image, down_points, interpolation=cv2.INTER_NEAREST)
-        mask = cv2.resize(mask, down_points, interpolation=cv2.INTER_NEAREST)
+        if self.downscale:
+            down_points = (int(image.shape[1] / 2), int(image.shape[0] / 2))
+            image = cv2.resize(image, down_points, interpolation=cv2.INTER_NEAREST)
+            mask = cv2.resize(mask, down_points, interpolation=cv2.INTER_NEAREST)
 
         # n x m image
         n = image.shape[0] // self.patch_size
@@ -71,3 +77,18 @@ class KidneyBiopsyDataset(Dataset):
             mask = augmentations["mask"]
 
         return image, mask
+    
+    def __get_n_patches__(self):
+        image = cv2.imread(self.images_path[0], cv2.IMREAD_GRAYSCALE)
+        image = image[:, 128:3712]
+        if self.downscale:
+            down_points = (int(image.shape[1] / 2), int(image.shape[0] / 2))
+            image = cv2.resize(image, down_points, interpolation=cv2.INTER_NEAREST)
+
+        try:
+            if image.shape[0] * image.shape[1] % (self.patch_size ** 2) != 0:
+                # raise the ValueError
+                raise ValueError("ValueError: Please insert a valid patch size")
+            return image.shape[0] * image.shape[1] // (self.patch_size ** 2)
+        except ValueError as e:
+            print(e)
