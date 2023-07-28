@@ -13,23 +13,25 @@ class KidneyBiopsyDataset(Dataset):
         self.split = split
         self.transform = transform
         self.n_samples = len(images_path)
+        self.n_patches = 42
+        self.n_augs = 4
 
     def __len__(self):
         if self.split == 'train':
-            return self.n_samples * 4 * 42
+            return self.n_samples * self.n_augs * self.n_patches
         elif self.split == 'valid':
-            return self.n_samples * 42
+            return self.n_samples * self.n_patches
         elif self.split == 'test':
-            return self.n_samples * 42
+            return self.n_samples * self.n_patches
 
     def __getitem__(self, index):
 
-        patch_number = index % 42
-        image_number = index // 42
+        patch_number = index % self.n_patches
+        image_number = index // self.n_patches
 
-        # additional code to augment the dataset and increase the size of the dataset by 4
+        # Augmentation (Increase the size of the dataset by number of augmentations)
         if self.transform:
-            image_number = image_number // 4
+            image_number = image_number // self.n_augs
 
         # Read image as grayscale image
         image = cv2.imread(self.images_path[image_number], cv2.IMREAD_GRAYSCALE)
@@ -37,11 +39,11 @@ class KidneyBiopsyDataset(Dataset):
         # Read rgb mask as rgb image
         mask = cv2.imread(self.masks_path[image_number], cv2.IMREAD_COLOR)
 
-        # Crop image and mask
+        # Crop image and mask (3072 x 4080) -> (3072 x 3584)
         image = image[:, 128:3712]
         mask = mask[:, 128:3712]
         
-        # Downscale image and mask
+        # Downscale image and mask (3072 x 3584) -> (1536 x 1792)
         down_points = (int(image.shape[1] / 2), int(image.shape[0] / 2))
         image = cv2.resize(image, down_points, interpolation=cv2.INTER_NEAREST)
         mask = cv2.resize(mask, down_points, interpolation=cv2.INTER_NEAREST)
